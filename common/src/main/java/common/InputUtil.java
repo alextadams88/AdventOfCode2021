@@ -1,6 +1,5 @@
 package common;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Files;
@@ -20,5 +19,11 @@ public class InputUtil {
     public static Scanner getFileReader(String filename){
         File file = new File(InputUtil.class.getClassLoader().getResource(filename).toURI());
         return new Scanner(new FileReader(file));
+    }
+
+    @SneakyThrows
+    public static String getFile(String filename){
+        File file = new File(InputUtil.class.getClassLoader().getResource(filename).toURI());
+        return Files.readString(file.toPath()).trim();
     }
 }

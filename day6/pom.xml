@@ -2,21 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>advent2021</artifactId>
+        <groupId>org.deadbeef</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.deadbeef</groupId>
-    <artifactId>advent2021</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>day1</module>
-        <module>common</module>
-        <module>day2</module>
-        <module>day3</module>
-        <module>day4</module>
-        <module>day5</module>
-        <module>day6</module>
-    </modules>
+    <artifactId>day6</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -25,9 +18,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <groupId>org.deadbeef</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -44,5 +37,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
