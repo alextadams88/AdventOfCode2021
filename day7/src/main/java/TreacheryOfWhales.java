@@ -32,11 +32,7 @@ public class TreacheryOfWhales {
     }
 
     private static long findTotalDistanceFromNumberLinear(List<Integer> nums, int median){
-        Long runningTotal = 0L;
-        for (Integer num : nums) {
-            runningTotal += Math.abs(median - num);
-        }
-        return runningTotal;
+        return nums.stream().mapToLong(Integer::longValue).reduce(0, (subtotal, num) -> subtotal + Math.abs(median - num));
     }
 
     private static long part2(List<Integer> input){
@@ -50,11 +46,9 @@ public class TreacheryOfWhales {
     }
 
     private static long findTotalDistanceFromMeanWithGrowth(List<Integer> nums, int mean){
-        Long runningTotal = 0L;
-        for (Integer num : nums) {
-            Long difference = (long) Math.abs(mean - num);
-            runningTotal += (difference * (difference+1)/2); //summation formula
-        }
-        return runningTotal;
+        return nums.stream().mapToLong(Integer::longValue).reduce(0, (subtotal, num) -> {
+            Long difference = Math.abs(mean - num);
+            return subtotal + (difference * (difference+1)/2); //summation formula
+        });
     }
 }
