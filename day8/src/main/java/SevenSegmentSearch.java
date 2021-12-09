@@ -28,12 +28,10 @@ public class SevenSegmentSearch {
         for (String line : input) {
             var tokens = line.split("\\|");
             var signalPatterns = Arrays.asList(tokens[0].trim().split(" "));
-            signalPatterns = signalPatterns.stream().map(String::toCharArray).peek(Arrays::sort)
-                .map(String::valueOf).collect(Collectors.toList());
+            signalPatterns = signalPatterns.stream().map(String::toCharArray).peek(Arrays::sort).map(String::valueOf).collect(Collectors.toList());
             var convertedSignalPatterns = convertSignalPatternsToNumbers(signalPatterns);
             var outputValues = Arrays.asList(tokens[1].trim().split(" "));
-            outputValues = outputValues.stream().map(String::toCharArray).peek(Arrays::sort)
-                .map(String::valueOf).collect(Collectors.toList());
+            outputValues = outputValues.stream().map(String::toCharArray).peek(Arrays::sort).map(String::valueOf).collect(Collectors.toList());
             result += convertedSignalPatterns.get(outputValues.get(0)) * 1000;
             result += convertedSignalPatterns.get(outputValues.get(1)) * 100;
             result += convertedSignalPatterns.get(outputValues.get(2)) * 10;
@@ -43,43 +41,17 @@ public class SevenSegmentSearch {
     }
 
     private static HashMap<String, Integer> convertSignalPatternsToNumbers(List<String> signalPatterns){
+        HashMap<String, Integer> values = new HashMap<>();
         String one = signalPatterns.stream().filter(str -> str.length() == 2).findFirst().get();
+        values.put(one, 1);
         String four = signalPatterns.stream().filter(str -> str.length() == 4).findFirst().get();
-        String seven = signalPatterns.stream().filter(str -> str.length() == 3).findFirst().get();
-        String eight = signalPatterns.stream().filter(str -> str.length() == 7).findFirst().get();
-        List<String> fiveSegmentCandidates = signalPatterns.stream().filter(str -> str.length() == 5).collect(Collectors.toList());
+        values.put(four, 4);
         List<String> sixSegmentCandidates = signalPatterns.stream().filter(str -> str.length() == 6).collect(Collectors.toList());
-        String zero = "";
-        String two = "";
-        String three = "";
-        String five = "";
-        String six = "";
-        String nine = "";
-        for (int i = 0; i < sixSegmentCandidates.size(); i++){
-            var candidate = sixSegmentCandidates.get(i);
-            if (four.chars().mapToObj(c->(char)c).allMatch(c-> candidate.contains(String.valueOf(c)))){
-                nine = candidate;
-                sixSegmentCandidates.remove(i);
-                break;
-            }
-        }
-        for (int i = 0; i < sixSegmentCandidates.size(); i++){
-            var candidate = sixSegmentCandidates.get(i);
-            if (one.chars().mapToObj(c->(char)c).allMatch(c-> candidate.contains(String.valueOf(c)))){
-                zero = candidate;
-                sixSegmentCandidates.remove(i);
-                break;
-            }
-        }
-        six = sixSegmentCandidates.get(0);
-        for (int i = 0; i < fiveSegmentCandidates.size(); i++){
-            var candidate = fiveSegmentCandidates.get(i);
-            if (one.chars().mapToObj(c->(char)c).allMatch(c-> candidate.contains(String.valueOf(c)))){
-                three = candidate;
-                fiveSegmentCandidates.remove(i);
-                break;
-            }
-        }
+        values.put(searchCandidatesForMatch(sixSegmentCandidates, four), 9);
+        values.put(searchCandidatesForMatch(sixSegmentCandidates, one), 0);
+        values.put(sixSegmentCandidates.get(0), 6);
+        List<String> fiveSegmentCandidates = signalPatterns.stream().filter(str -> str.length() == 5).collect(Collectors.toList());
+        values.put(searchCandidatesForMatch(fiveSegmentCandidates, one), 3);
         for (int i = 0; i < fiveSegmentCandidates.size(); i++){
             var candidate = fiveSegmentCandidates.get(i);
             int countOfMissing = 0;
@@ -89,22 +61,24 @@ public class SevenSegmentSearch {
                 }
             }
             if (countOfMissing == 1){
-                five = candidate;
+                values.put(candidate, 5);
                 fiveSegmentCandidates.remove(i);
             }
         }
-        two = fiveSegmentCandidates.get(0);
-        HashMap<String, Integer> values = new HashMap<>();
-        values.put(zero, 0);
-        values.put(one, 1);
-        values.put(two, 2);
-        values.put(three, 3);
-        values.put(four, 4);
-        values.put(five, 5);
-        values.put(six, 6);
-        values.put(seven, 7);
-        values.put(eight, 8);
-        values.put(nine, 9);
+        values.put(fiveSegmentCandidates.get(0), 2);
+        values.put(signalPatterns.stream().filter(str -> str.length() == 3).findFirst().get(), 7);
+        values.put(signalPatterns.stream().filter(str -> str.length() == 7).findFirst().get(), 8);
         return values;
+    }
+
+    private static String searchCandidatesForMatch(List<String> candidates, String target){
+        for (int i = 0; i < candidates.size(); i++){
+            var candidate = candidates.get(i);
+            if (target.chars().mapToObj(c->(char)c).allMatch(c-> candidate.contains(String.valueOf(c)))){
+                candidates.remove(i);
+                return candidate;
+            }
+        }
+        return "";
     }
 }
